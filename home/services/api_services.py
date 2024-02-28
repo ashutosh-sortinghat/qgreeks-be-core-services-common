@@ -93,10 +93,8 @@ def final_1(symbol):
         time.sleep(1)
         second_date = second_date[0]
         option_chain = get_option_chain(symbol=symbol, date=f"{timestamp}")
-        calls = option_chain['body'][0]['options'][0]["calls"]
-        puts = option_chain['body'][0]['options'][0]["puts"]
-        if len(calls) == 0 or len(puts) == 0:
-            return {"error": f"No data in calls and puts {exp_date}"}
+        calls = option_chain['body'][0]['options'][0]["calls"] if option_chain['body'] else []
+        puts = option_chain['body'][0]['options'][0]["puts"] if option_chain['body'] else []
         get_call_above_price_list = [
             call for call in calls if call["strike"] > symbol_m_price]
         get_put_below_price_list = [

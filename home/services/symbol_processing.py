@@ -82,20 +82,20 @@ def process_symbol(sym):
         "json_output": {},
         "error": ""
     }
-    # try:
-    symbol_details = final_1(symbol=sym)
+    try:
+        symbol_details = final_1(symbol=sym)
 
-    if len(symbol_details.keys()) > 9:
-        # complete_INFO_symbol_list.append(sym)
-        pass
-    else:
-        if len(symbol_details.keys()) == 3:
-            final_dict["error"] = "---Api Failed. symbol {sym}, {dict_df.keys()}"
+        if len(symbol_details.keys()) > 9:
+            # complete_INFO_symbol_list.append(sym)
+            pass
         else:
-            final_dict["error"] = f"---------Skipping symbol {sym} due to insufficient data. {symbol_details.get('error')}"
+            if len(symbol_details.keys()) == 3:
+                final_dict["error"] = "---Api Failed. symbol {sym}, {dict_df.keys()}"
+            else:
+                final_dict["error"] = f"---------Skipping symbol {sym} due to insufficient data. {symbol_details.get('error')}"
 
-    # except Exception as e:
-    #     final_dict["error"] = f"Error processing symbol {sym}: {e}"
+    except Exception as e:
+        final_dict["error"] = f"Error processing symbol {sym}: {e}"
 
     if len(final_dict["error"]) == 0:
         final_dict["status"] = True
@@ -128,15 +128,16 @@ def process_symbols_and_insert(conn, symbols_list):
             # insert_sym_dict.append(output.get("json_output"))
             if o2.get("status") != True:
                 failed_to_insert.append(sym)
-                output["error"] = f"failed to insert - {len(output["json_output"].keys())}"
-                print(
-                    f" Insert - {len(output["json_output"].keys())}")
+                output["error"] = f"failed to insert - {o2}"
+                print(f" Insert err- {o2}")
+                
         else:
             failed_to_process.append(sym)
+            output["error"] += f"failed to proceed - {output}"
         if "error" in output:
             if len(output["error"])!=0:
-                print(f"error in {sym}")
-                error_output.append(output)
+                # print(f"error in {sym} {output["error"]}")
+                error_output.append(output["error"])
 
     return failed_to_process, failed_to_insert, insert_sym_dict, error_output
 
