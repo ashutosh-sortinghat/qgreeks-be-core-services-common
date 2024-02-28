@@ -5,14 +5,14 @@ from datetime import datetime, timedelta
 
 from .services.symbol_processing import process_symbols_and_insert, get_tickers_name
 from .services.option_activity_service import get_option_activity
-from .config.database import connect_to_database
+from .config.config import connect_to_database
 
 
 
 @api_view(['GET'])
 def insert_symbols(request):
 
-    symbols_250_list = get_tickers_name()[56:]
+    symbols_250_list = get_tickers_name()
     print(len(symbols_250_list))
     conn = connect_to_database()
     failed_to_process, failed_to_insert, insert_sym_dict, output =  process_symbols_and_insert(

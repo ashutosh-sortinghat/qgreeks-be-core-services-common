@@ -3,11 +3,11 @@ import time
 from .utils import extract_date_fn, get_current_date, \
                     convert_date_to_timestamp_with_zone, filter_properties
 import datetime
-
+from ..config.config import DBConfig
 
 def get_options_expirations(symbol):
 
-    url = "https://twelve-data1.p.rapidapi.com/options/expiration"
+    url = DBConfig().options_expirations_api
 
     querystring = {"symbol": f"{symbol}"}
 
@@ -22,7 +22,7 @@ def get_options_expirations(symbol):
 
 
 def get_option_chain(symbol, date):
-    url = "https://mboum-finance.p.rapidapi.com/v1/markets/options"
+    url = DBConfig().option_chain_api
     querystring = {"symbol": f"{symbol}",
                    "expiration": date, "display": "list"}
     headers = {
@@ -35,7 +35,7 @@ def get_option_chain(symbol, date):
 
 def get_option_price(symbol):
 
-    url = "https://twelve-data1.p.rapidapi.com/price"
+    url = DBConfig().market_price_api
 
     querystring = {"symbol": f"{symbol}", "format": "json", "outputsize": "30"}
 
@@ -51,7 +51,7 @@ def get_option_price(symbol):
 
 def get_earning_dates(symbol):
 
-    url = "https://mboum-finance.p.rapidapi.com/qu/quote/earnings"
+    url = DBConfig().earning_date_api
     querystring = {"symbol": symbol}
     headers = {
         "X-RapidAPI-Key": "94c0a913b8mshd15fe7d6bf053e7p177a78jsnfdf4efc4eeca",

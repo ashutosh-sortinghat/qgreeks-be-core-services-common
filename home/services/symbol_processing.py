@@ -6,7 +6,7 @@ import psycopg2
 
 from .utils import extract_date_fn, get_current_date
 from .api_services import get_earning_dates, final_1
-from ..config.database import connect_to_database
+from ..config.config import connect_to_database
 
 
 
