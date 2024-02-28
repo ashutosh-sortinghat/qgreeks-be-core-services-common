@@ -23,12 +23,21 @@ def filter_properties(list_val, market_price, suffix_properties="call"):
     else:
         list_val = list_val[-5:]
 
+
+def filter_properties(list_val, market_price, suffix_properties="call"):
+    output_list = {}
+    suffix = ""
+
+    if suffix_properties == "call":
+        list_val = list_val[:5]
+    else:
+        list_val = list_val[-5:]
+    list_length = len(list_val)
+
     for idx in range(1, 6):
+
         if idx <= list_length:
             val = list_val[idx - 1]
-            if suffix_properties != "call":
-                idx = 6 - idx
-
             strike = int(val.get("strike", 0))
             last_trade_date = val.get("last_trade_date", 0)
             bid = val.get("bid", 0)
@@ -43,6 +52,8 @@ def filter_properties(list_val, market_price, suffix_properties="call"):
             strike = last_trade_date = bid = ask = volume = implied_volatility = in_the_money = 0
             avg_market_price = mid_percent = None
 
+        if suffix_properties != "call":
+            idx = 6 - idx
         output_list.update({
             f"{suffix_properties}_l{idx}_strikeprice": strike,
             f"{suffix_properties}_l{idx}_last_trade_date": last_trade_date,

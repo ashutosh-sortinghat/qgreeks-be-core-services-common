@@ -39,7 +39,7 @@ class DBConfig:
 
 
 
-# db_config_without_dates = DBConfig()
+db_config_without_dates = DBConfig()
 
 # print("\nWithout Dates:")
 # print("DB_NAME:", db_config_without_dates.DB_NAME)
@@ -55,15 +55,20 @@ class DBConfig:
 
 
 
+
+
 def connect_to_database():
+    db_config = DBConfig()  
+
     conn = psycopg2.connect(
-        dbname=creds.get("dbname"),
-        user=creds.get("user", "postgres"),
-        password=creds.get("password", "12345"),
-        host=creds.get("host", "localhost"),
-        port=creds.get("port", "5432")
+        dbname=db_config.db_name,
+        user=db_config.db_user,
+        password=db_config.db_password,
+        host=db_config.db_host,
+        port=db_config.db_port
     )
     return conn
+
 
 
 # ----------------other-------------------------------
@@ -74,14 +79,22 @@ def connect_to_database():
 # setx DB_PASSWORD "12345"
 # setx DB_HOST "localhost"
 # setx DB_PORT "5432"
-
-creds = {
-        "dbname" : os.getenv("DB_NAME"),
-        "user" : os.getenv("DB_USER"),
-        "password" : os.getenv("DB_PASSWORD"),
-        "host" : os.getenv("DB_HOST"),
-        "port" : os.getenv("DB_PORT")
-        }
+# def connect_to_database():
+#     conn = psycopg2.connect(
+#         dbname=creds.get("dbname"),
+#         user=creds.get("user", "postgres"),
+#         password=creds.get("password", "12345"),
+#         host=creds.get("host", "localhost"),
+#         port=creds.get("port", "5432")
+#     )
+#     return conn
+# creds = {
+#         "dbname" : os.getenv("DB_NAME"),
+#         "user" : os.getenv("DB_USER"),
+#         "password" : os.getenv("DB_PASSWORD"),
+#         "host" : os.getenv("DB_HOST"),
+#         "port" : os.getenv("DB_PORT")
+#         }
 
 
 # creds = {

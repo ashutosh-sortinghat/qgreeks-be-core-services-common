@@ -69,10 +69,9 @@ def final_1(symbol):
         time.sleep(1)
         exp_date = get_options_expirations(symbol=symbol).get("dates", None)
         if exp_date is None:
-            return get_options_expirations(symbol=symbol)
+            return {"error": f"No data exp_date {get_options_expirations(symbol=symbol)}"}
 
-        exp_date = [datetime.datetime.strptime(
-            f"{d} 00:00:00", "%Y-%m-%d  %H:%M:%S") for d in exp_date]
+        exp_date = [datetime.datetime.strptime(f"{d} 00:00:00", "%Y-%m-%d  %H:%M:%S") for d in exp_date]
 
         if len(exp_date) == 0:
             return {"error": f"No data exp_date {exp_date}"}
@@ -86,8 +85,7 @@ def final_1(symbol):
         if len(second_date) == 0:
             return {"error": f"No weekly data missing second_date{exp_date}"}
 
-        timestamp = convert_date_to_timestamp_with_zone(
-            timezone="GMT", date=second_date[0])
+        timestamp = convert_date_to_timestamp_with_zone(timezone="GMT", date=second_date[0])
         time.sleep(1)
         symbol_m_price = get_option_price(symbol=symbol)
         time.sleep(1)
@@ -95,17 +93,12 @@ def final_1(symbol):
         option_chain = get_option_chain(symbol=symbol, date=f"{timestamp}")
         calls = option_chain['body'][0]['options'][0]["calls"] if option_chain['body'] else []
         puts = option_chain['body'][0]['options'][0]["puts"] if option_chain['body'] else []
-        get_call_above_price_list = [
-            call for call in calls if call["strike"] > symbol_m_price]
-        get_put_below_price_list = [
-            put for put in puts if put["strike"] <= symbol_m_price]
+        get_call_above_price_list = [call for call in calls if call["strike"] > symbol_m_price]
+        get_put_below_price_list = [put for put in puts if put["strike"] <= symbol_m_price]
 
-        filtered_get_put_below_price_list = filter_properties(
-            get_put_below_price_list, market_price=symbol_m_price, suffix_properties="put")
-        filtered_get_call_above_price_list = filter_properties(
-            get_call_above_price_list, market_price=symbol_m_price)
-        final_call_put_price_list = dict(
-            filtered_get_put_below_price_list, **filtered_get_call_above_price_list)
+        filtered_get_put_below_price_list = filter_properties(get_put_below_price_list, market_price=symbol_m_price, suffix_properties="put")
+        filtered_get_call_above_price_list = filter_properties(get_call_above_price_list, market_price=symbol_m_price)
+        final_call_put_price_list = dict(filtered_get_put_below_price_list, **filtered_get_call_above_price_list)
         
         extra_col = {"datetime": second_date, "date": second_date.date(), "ticker": symbol, "market_price": symbol_m_price, "is_weekly_data_available": True,
                      "exp_date": second_date}

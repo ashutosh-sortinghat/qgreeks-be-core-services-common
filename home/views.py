@@ -12,19 +12,17 @@ from .config.config import connect_to_database
 @api_view(['GET'])
 def insert_symbols(request):
 
-    symbols_250_list = get_tickers_name()
-    print(len(symbols_250_list))
+    symbols_list = get_tickers_name()
+    failed_api = ['CTRE', 'DOCS', 'DT', 'ELS', 'EPRT', 'EXLS', 'FLR', 'FR', 'FRSH', 'FWONK', 'GH', 'GO',
+                  'INFA', 'KDP', 'KTOS', 'LW', 'NNN', 'OPCH', 'PD', 'PNW', 'POR', 'PRVA', 'REXR', 'ROL',
+                  'RPD', 'RPRX', 'SMAR', 'STAG', 'VICI', 'VRRM', 'WAB', 'WMG', 'WRB']
+    print(len(symbols_list))
     conn = connect_to_database()
-    failed_to_process, failed_to_insert, insert_sym_dict, output =  process_symbols_and_insert(
-        conn, symbols_250_list)
-    print("----------------------", len(output), len(failed_to_insert), len(failed_to_process), output)
-    if failed_to_process or failed_to_insert:
-        fail_symbol = failed_to_process + failed_to_insert
-        failed_to_process, failed_to_insert, insert_sym_dict, output = process_symbols_and_insert(
-            conn, fail_symbol)
-        print("----------------------", len(output), len(failed_to_insert), len(failed_to_process), output)
-
+    failed_to_process, failed_to_insert, \
+    insert_sym_dict, output =  process_symbols_and_insert(conn, failed_api)
+    print("\n ----------------------", len(output), len(failed_to_insert), len(failed_to_process), output)
     conn.close()
+
     return Response({"requst": f"inserted successfully{failed_to_process}, {failed_to_insert}, {output}"})
  
 

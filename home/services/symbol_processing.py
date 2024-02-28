@@ -85,14 +85,13 @@ def process_symbol(sym):
     try:
         symbol_details = final_1(symbol=sym)
 
-        if len(symbol_details.keys()) > 9:
-            # complete_INFO_symbol_list.append(sym)
+        if len(symbol_details.keys()) >70:
             pass
         else:
             if len(symbol_details.keys()) == 3:
-                final_dict["error"] = "---Api Failed. symbol {sym}, {dict_df.keys()}"
+                final_dict["error"] = f" Api Failed. {sym} {symbol_details}"
             else:
-                final_dict["error"] = f"---------Skipping symbol {sym} due to insufficient data. {symbol_details.get('error')}"
+                final_dict["error"] = f"Skipping symbol {sym} due to {symbol_details.get('error')}"
 
     except Exception as e:
         final_dict["error"] = f"Error processing symbol {sym}: {e}"
@@ -122,6 +121,13 @@ def process_symbols_and_insert(conn, symbols_list):
     for i, sym in enumerate(symbols_list):
         print(i, end=": ")
         output = process_symbol(sym)
+        if output["status"] != True or len(output["json_output"].keys()) != 76:
+            time.sleep(6)
+            output = process_symbol(sym)
+            if output["status"] != True or len(output["json_output"].keys()) != 76:
+                time.sleep(6)
+                output = process_symbol(sym)
+                
         time.sleep(6)
         if output["status"] == True and len(output["json_output"].keys()) == 76:
             o2 = insert_dataframe_row(conn, output.get("json_output"))
@@ -133,7 +139,7 @@ def process_symbols_and_insert(conn, symbols_list):
                 
         else:
             failed_to_process.append(sym)
-            output["error"] += f"failed to proceed - {output}"
+            output["error"] += f"failed to proceed - {len(output['json_output'].keys())}"
         if "error" in output:
             if len(output["error"])!=0:
                 # print(f"error in {sym} {output["error"]}")
