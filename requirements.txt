@@ -1,4 +1,4 @@
-#Django==4.2.4
+Django==4.2.4
 psycopg2-binary==2.9.7
 djangorestframework==3.14.0
 drf-spectacular==0.26.4
@@ -7,7 +7,7 @@ requests
 urllib3
 azure-functions
 pandas_market_calendars
-Django==5.0.2
+#Django==5.0.2
 asyncio==3.4.3
 psycopg2==2.9.9
 uuid==1.30
