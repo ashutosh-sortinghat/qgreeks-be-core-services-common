@@ -9,6 +9,6 @@ azure-functions
 pandas_market_calendars
 Django==5.0.2
 asyncio==3.4.3
-psycopg2==3.1.18
+psycopg2==2.9.9
 uuid==1.30
 pytz==2024.1
