@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import sys
+sys.dont_write_bytecode = True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -87,6 +89,7 @@ WSGI_APPLICATION = "qg_screener_app2.wsgi.application"
 #         "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
+
 
 DATABASES = {
     'default': {
