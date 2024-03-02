@@ -7,23 +7,20 @@ class Account(models.Model):
     id = models.BigIntegerField(primary_key=True)
     eid = models.BigIntegerField()
     class Meta:
-        managed = False
         db_table = 'account'
 
 
 class StockDetails(models.Model):
-    id = models.BigIntegerField(primary_key=True)
-    stock_id = models.UUIDField()
+    # id = models.BigIntegerField(primary_key=True)
+    stock_id = models.UUIDField(primary_key=True,)
     ticker = models.CharField(blank=True, null=True)
     company_name = models.CharField(blank=True, null=True)
     sector = models.CharField(blank=True, null=True)
     industry = models.CharField(blank=True, null=True)
     country = models.CharField(blank=True, null=True)
-    market_cap = models.DecimalField(
-        max_digits=65535, decimal_places=65535, blank=True, null=True)
+    market_cap = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     p_e = models.CharField(blank=True, null=True)
-    price = models.DecimalField(
-        max_digits=65535, decimal_places=65535, blank=True, null=True)
+    price = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     change = models.CharField(blank=True, null=True)
     volume = models.IntegerField(blank=True, null=True)
     upcoming_earnings = models.DateField(blank=True, null=True)
