@@ -80,7 +80,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "qg_app.wsgi.application"
 
-db_config = DBConfig()
+db_config = DBConfig(env="dev")
 
 DATABASES = {
     'default': {

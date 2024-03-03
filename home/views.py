@@ -12,7 +12,7 @@ from rest_framework.decorators import action
 
 from .services.stockscreener_services import process_symbols_and_insert, get_tickers_name
 from .services.qtoptiondatastats_services import get_option_activity
-from .config.config import connect_to_database
+from qg_app.config import connect_to_database
 from home.serializers import StockDetailsSerializer, StockScreenerSerializer
 from .models import StockDetails, StockScreener
 from home.services.chatbotapi_services import Conversation
@@ -104,11 +104,11 @@ class StockDetailsViewSet(mixins.CreateModelMixin,
     queryset = StockDetails.objects.all()
     serializer_class = StockDetailsSerializer
     
-    @action(detail=True, methods=['get'], url_path="(?P<tickerName>[^/.]+)/search/ticker")
-    def search(self, request, pk=None, tickerName=None):
+    @action(detail=True, methods=['get'], url_path="(?P<ticker_name>[^/.]+)/search/ticker")
+    def search(self, request, pk=None, ticker_name=None):
         try:
             # print("---------------------ran", pk, tickerName)
-            tickerNameList = [ticker.strip() for ticker in tickerName.split(",")]
+            tickerNameList = [ticker.strip() for ticker in ticker_name.split(",")]
             details = StockDetails.objects.all().filter(ticker__in=tickerNameList)
 
             st_serializer = StockDetailsSerializer(details,  many=True,context={'request': request})
@@ -123,33 +123,39 @@ class StockDetailsViewSet(mixins.CreateModelMixin,
             })
 
 
-class StockScreenerViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin,
-                           mixins.UpdateModelMixin,mixins.ListModelMixin, viewsets.GenericViewSet):
+class StockScreenerViewSet(mixins.CreateModelMixin,
+                           mixins.RetrieveModelMixin,
+                           mixins.UpdateModelMixin,
+                           mixins.ListModelMixin, 
+                           viewsets.GenericViewSet):
 
     queryset = StockScreener.objects.all()
     serializer_class = StockScreenerSerializer
-    
+    lookup_field = 'stock_screener_id'
 
-    # @action(detail=True, methods=['get'], url_path="(?P<tickerName>[^/.]+)/search/ticker")
-    # def search(self, request, pk=None, tickerName=None):
-    #     try:
-    #         # print("---------------------ran", pk, tickerName)
-    #         tickerNameList = [ticker.strip()
-    #                           for ticker in tickerName.split(",")]
-    #         details = StockScreener.objects.all().filter(ticker__in=tickerNameList)
-    #         st_serializer = StockScreenerSerializer(
-    #             details,  many=True, context={'request': request})
-    #         if len(st_serializer.data) == 0:
-    #             return Response({'message': 'stock might not exists !! Error'})
-    #         return Response(st_serializer.data)
+    @action(detail=True, methods=['get'])
+    def search(self, request, pk=None, ticker_name=None):
+        try:
+            print("---------------------ran", pk, ticker_name)
+            tickerNameList = [ticker.strip()
+                              for ticker in ticker_name.split(",")]
+            details = StockScreener.objects.all().filter(ticker__in=tickerNameList)
+            st_serializer = StockScreenerSerializer(details,  many=True, context={'request': request})
+            if len(st_serializer.data) == 0:
+                return Response({'message': 'stock might not exists !! Error'})
+            return Response(st_serializer.data)
 
-    #     except Exception as e:
-    #         print(e)
-    #         return Response({
-    #             'message': 'stock might not exists !! Error'
-    #         })
+        except Exception as e:
+            print(e)
+            return Response({
+                'message': 'stock might not exists !! Error'
+            })
 
 
+# class StockScreenerViewSet(viewsets.ModelViewSet):
+#     queryset = StockScreener.objects.all()
+#     serializer_class = StockScreenerSerializer
+#     lookup_field = 'stock_screener_id'
 
 # class StockList(generics.ListCreateAPIView):
 #     queryset = StockScreener.objects.all()

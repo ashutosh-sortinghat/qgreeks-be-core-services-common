@@ -1,25 +1,31 @@
 from . import views #ListBooks, list_accounts
 from django.urls import path, include
 from rest_framework import routers
-from home.serializers import StockDetailsSerializer
 
 
 router = routers.DefaultRouter()
-router.register(r'StockDetails', views.StockDetailsViewSet)
-# router.register(r'stockScreener', views.StockScreenerViewSet)
-screener_viewset_fn = views.StockScreenerViewSet.as_view({
-                                            'get': 'list' 
-                                            # 'post': 'create',
-                                            # 'get': 'retrieve',
-                                            # 'put': 'update',
-                                            # 'patch': 'partial_update' 
-                                            })
+router.register(r'stock_details', views.StockDetailsViewSet)
+
 
 urlpatterns = [
     path('', include(router.urls)),
     path('qg/insert/tickers/', views.insert_symbols, name='insert_tickers'),
     path('insights/stats/', views.get_insight_state, name='stats'),
-    path('StockScreener/', screener_viewset_fn, name="StockScreener"),
-    path('generate-response/', views.generate_response, name="Chatbot")
+    
+    path('bot/generate-response/', views.generate_response, name="Chatbot")
 
     ]
+urlpatterns += [
+    path('stock_screener/<stock_screener_id>/', views.StockScreenerViewSet.as_view({
+         'get': 'retrieve',
+         'put': 'update',
+         'patch': 'partial_update',
+         }), name="stock_screener-detail"),
+    path('stock_screener/', views.StockScreenerViewSet.as_view({
+        'get': 'list',
+        'post': 'create',
+    }), name="stock_screener-list"),
+    path('stock_screener/<int:pk>/<str:ticker_name>/search/ticker/',
+            views.StockScreenerViewSet.as_view({'get': 'search'}),
+         name='stock_screener-search')
+]

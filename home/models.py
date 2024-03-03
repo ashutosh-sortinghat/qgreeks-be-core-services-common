@@ -123,7 +123,7 @@ from django.db import models
 
 
 class StockDetails(models.Model):
-    stock_id = models.UUIDField()
+    stock_id = models.UUIDField(primary_key=True)
     ticker = models.CharField(blank=True, null=True)
     company_name = models.CharField(blank=True, null=True)
     sector = models.CharField(blank=True, null=True)
@@ -142,7 +142,6 @@ class StockDetails(models.Model):
     update_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'stock_details'
 
 class StockScreener(models.Model):
@@ -231,7 +230,6 @@ class StockScreener(models.Model):
     update_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'stock_screener'
 
 
