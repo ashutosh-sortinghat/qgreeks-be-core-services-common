@@ -9,8 +9,8 @@ from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory
 from rest_framework.decorators import action
 
-from .services.symbol_processing import process_symbols_and_insert, get_tickers_name
-from .services.option_activity_service import get_option_activity
+from .services.stockscreener_services import process_symbols_and_insert, get_tickers_name
+from .services.qtoptiondatastats_services import get_option_activity
 from .config.config import connect_to_database
 from home.serializers import StockDetailsSerializer, StockScreenerSerializer
 from .models import StockDetails, StockScreener
@@ -22,7 +22,7 @@ from .models import StockDetails, StockScreener
 #     'request': Request(request),
 # }
 
-@api_view(['GET'])
+@api_view(['POST'])
 def insert_symbols(request):
 
     symbols_list = get_tickers_name()
