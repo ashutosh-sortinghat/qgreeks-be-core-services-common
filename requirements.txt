@@ -6,4 +6,4 @@ pytz==2024.1
 django-rest-swagger
 drf_yasg
 django-cors-headers==4.2.0
-
+google.generativeai
