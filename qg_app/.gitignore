@@ -6,3 +6,4 @@ api_logs.log.*
 *.log
 .vscode/launch.json
 .env
+venv/*
