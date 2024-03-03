@@ -14,6 +14,8 @@ from pathlib import Path
 import sys
 from .config import DBConfig
 sys.dont_write_bytecode = True
+from corsheaders.defaults import default_headers
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +30,7 @@ SECRET_KEY = "django-insecure-7b#b*c73g0ryyp#kqy-lxbx_q*m3$18je=2z2p7vo%^&f0-jn+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -43,7 +45,8 @@ INSTALLED_APPS = [
     "home",
     "rest_framework_swagger",
     "rest_framework",
-    "drf_yasg"
+    "drf_yasg",
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
@@ -58,6 +61,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "qg_app.urls"
