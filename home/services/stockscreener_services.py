@@ -5,8 +5,8 @@ import uuid
 import psycopg2
 
 from .utils import extract_date_fn, get_current_date
-from .api_services import get_earning_dates, final_1
-from ..config.config import connect_to_database
+from .externalapi_services import get_earning_dates, final_1
+from qg_app.config import connect_to_database
 
 
 

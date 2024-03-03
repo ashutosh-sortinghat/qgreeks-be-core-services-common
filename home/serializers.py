@@ -11,15 +11,15 @@ class StockDetailsSerializer(serializers.HyperlinkedModelSerializer):
         fields = "__all__"
         # exclude = ["stock_id", "id"]
 
+
 class StockScreenerSerializer(serializers.HyperlinkedModelSerializer):
-    options = serializers.HyperlinkedRelatedField(
-        view_name='option-detail',
-        lookup_field='stock_screener_id',
-        many=True,
-        read_only=True)
-    
+    stock_screener_id = serializers.ReadOnlyField()
+
     class Meta:
         model = StockScreener
-        fields = ["url", "stock_screener_id", "ticker", "options"]
-        lookup_field = "stock_screener_id"
-        # fields = ["etf"]  # "__all__"
+        fields = "__all__"
+        extra_kwargs = {
+            'url': {'view_name': 'StockScreener-detail', 'lookup_field': 'stock_screener_id'},
+            'users': {'lookup_field': 'stock_screener_id'}
+        }
+    

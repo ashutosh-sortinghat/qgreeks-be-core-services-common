@@ -3,7 +3,7 @@ import time
 from .utils import extract_date_fn, get_current_date, \
                     convert_date_to_timestamp_with_zone, filter_properties
 import datetime
-from ..config.config import DBConfig
+from qg_app.config import DBConfig
 
 def get_options_expirations(symbol):
 

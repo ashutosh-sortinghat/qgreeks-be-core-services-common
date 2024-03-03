@@ -3,26 +3,24 @@ from rest_framework.mixins import UpdateModelMixin, ListModelMixin
 from typing import Any
 from rest_framework import permissions, viewsets, generics, mixins
 from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_204_NO_CONTENT
 from rest_framework.decorators import api_view
 from datetime import datetime, timedelta
 from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory
 from rest_framework.decorators import action
 
-from .services.symbol_processing import process_symbols_and_insert, get_tickers_name
-from .services.option_activity_service import get_option_activity
-from .config.config import connect_to_database
+from .services.stockscreener_services import process_symbols_and_insert, get_tickers_name
+from .services.qtoptiondatastats_services import get_option_activity
+from qg_app.config import connect_to_database
 from home.serializers import StockDetailsSerializer, StockScreenerSerializer
 from .models import StockDetails, StockScreener
+from home.services.chatbotapi_services import Conversation
 
 
-# factory = APIRequestFactory()
-# request = factory.get('/')
-# serializer_context = {
-#     'request': Request(request),
-# }
+conversation_instance = Conversation()
 
-@api_view(['GET'])
+@api_view(['POST'])
 def insert_symbols(request):
 
     symbols_list = get_tickers_name()
@@ -81,6 +79,20 @@ def get_insight_state(request, account_id):
     })
 
 
+@api_view(['POST'])
+def generate_response(request):
+    try:
+        question = request.query_params.get('question')
+        if question ==None:
+            print("question not found")
+            question = "Hii"
+        answer = conversation_instance.send_message(question)
+        return Response({"Question": question, "Answer": answer})
+    except Exception as e:
+        return Response(status=HTTP_500_INTERNAL_SERVER_ERROR, data={"error": str(e)})
+
+
+ 
 class StockDetailsViewSet(mixins.CreateModelMixin,
                    mixins.RetrieveModelMixin,
                    mixins.UpdateModelMixin,
@@ -92,11 +104,11 @@ class StockDetailsViewSet(mixins.CreateModelMixin,
     queryset = StockDetails.objects.all()
     serializer_class = StockDetailsSerializer
     
-    @action(detail=True, methods=['get'], url_path="(?P<tickerName>[^/.]+)/search/ticker")
-    def search(self, request, pk=None, tickerName=None):
+    @action(detail=True, methods=['get'], url_path="(?P<ticker_name>[^/.]+)/search/ticker")
+    def search(self, request, pk=None, ticker_name=None):
         try:
             # print("---------------------ran", pk, tickerName)
-            tickerNameList = [ticker.strip() for ticker in tickerName.split(",")]
+            tickerNameList = [ticker.strip() for ticker in ticker_name.split(",")]
             details = StockDetails.objects.all().filter(ticker__in=tickerNameList)
 
             st_serializer = StockDetailsSerializer(details,  many=True,context={'request': request})
@@ -111,33 +123,39 @@ class StockDetailsViewSet(mixins.CreateModelMixin,
             })
 
 
-class StockScreenerViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin,
-                           mixins.UpdateModelMixin,mixins.ListModelMixin, viewsets.GenericViewSet):
+class StockScreenerViewSet(mixins.CreateModelMixin,
+                           mixins.RetrieveModelMixin,
+                           mixins.UpdateModelMixin,
+                           mixins.ListModelMixin, 
+                           viewsets.GenericViewSet):
 
     queryset = StockScreener.objects.all()
     serializer_class = StockScreenerSerializer
-    
+    lookup_field = 'stock_screener_id'
 
-    # @action(detail=True, methods=['get'], url_path="(?P<tickerName>[^/.]+)/search/ticker")
-    # def search(self, request, pk=None, tickerName=None):
-    #     try:
-    #         # print("---------------------ran", pk, tickerName)
-    #         tickerNameList = [ticker.strip()
-    #                           for ticker in tickerName.split(",")]
-    #         details = StockScreener.objects.all().filter(ticker__in=tickerNameList)
-    #         st_serializer = StockScreenerSerializer(
-    #             details,  many=True, context={'request': request})
-    #         if len(st_serializer.data) == 0:
-    #             return Response({'message': 'stock might not exists !! Error'})
-    #         return Response(st_serializer.data)
+    @action(detail=True, methods=['get'])
+    def search(self, request, pk=None, ticker_name=None):
+        try:
+            print("---------------------ran", pk, ticker_name)
+            tickerNameList = [ticker.strip()
+                              for ticker in ticker_name.split(",")]
+            details = StockScreener.objects.all().filter(ticker__in=tickerNameList)
+            st_serializer = StockScreenerSerializer(details,  many=True, context={'request': request})
+            if len(st_serializer.data) == 0:
+                return Response({'message': 'stock might not exists !! Error'})
+            return Response(st_serializer.data)
 
-    #     except Exception as e:
-    #         print(e)
-    #         return Response({
-    #             'message': 'stock might not exists !! Error'
-    #         })
+        except Exception as e:
+            print(e)
+            return Response({
+                'message': 'stock might not exists !! Error'
+            })
 
 
+# class StockScreenerViewSet(viewsets.ModelViewSet):
+#     queryset = StockScreener.objects.all()
+#     serializer_class = StockScreenerSerializer
+#     lookup_field = 'stock_screener_id'
 
 # class StockList(generics.ListCreateAPIView):
 #     queryset = StockScreener.objects.all()
