@@ -19,5 +19,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('qg/insert/tickers/', views.insert_symbols, name='insert_tickers'),
     path('insights/stats/', views.get_insight_state, name='stats'),
-    path('StockScreener/', screener_viewset_fn, name="StockScreener")
+    path('StockScreener/', screener_viewset_fn, name="StockScreener"),
+    path('generate-response/', views.generate_response, name="Chatbot")
+
     ]

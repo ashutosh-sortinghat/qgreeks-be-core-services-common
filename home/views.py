@@ -3,6 +3,7 @@ from rest_framework.mixins import UpdateModelMixin, ListModelMixin
 from typing import Any
 from rest_framework import permissions, viewsets, generics, mixins
 from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_204_NO_CONTENT
 from rest_framework.decorators import api_view
 from datetime import datetime, timedelta
 from rest_framework.request import Request
@@ -14,13 +15,10 @@ from .services.qtoptiondatastats_services import get_option_activity
 from .config.config import connect_to_database
 from home.serializers import StockDetailsSerializer, StockScreenerSerializer
 from .models import StockDetails, StockScreener
+from home.services.chatbotapi_services import Conversation
 
 
-# factory = APIRequestFactory()
-# request = factory.get('/')
-# serializer_context = {
-#     'request': Request(request),
-# }
+conversation_instance = Conversation()
 
 @api_view(['POST'])
 def insert_symbols(request):
@@ -81,6 +79,20 @@ def get_insight_state(request, account_id):
     })
 
 
+@api_view(['POST'])
+def generate_response(request):
+    try:
+        question = request.query_params.get('question')
+        if question ==None:
+            print("question not found")
+            question = "Hii"
+        answer = conversation_instance.send_message(question)
+        return Response({"Question": question, "Answer": answer})
+    except Exception as e:
+        return Response(status=HTTP_500_INTERNAL_SERVER_ERROR, data={"error": str(e)})
+
+
+ 
 class StockDetailsViewSet(mixins.CreateModelMixin,
                    mixins.RetrieveModelMixin,
                    mixins.UpdateModelMixin,
