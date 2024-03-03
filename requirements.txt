@@ -1,5 +1,5 @@
 Django==4.2.4
-asyncio==3.4.3
+#asyncio==3.4.3
 psycopg2-binary==2.9.7
 uuid==1.30
 pytz==2024.1
