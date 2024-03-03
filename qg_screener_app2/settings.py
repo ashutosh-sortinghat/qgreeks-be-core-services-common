@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import sys
+import os
 sys.dont_write_bytecode = True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -94,13 +95,14 @@ WSGI_APPLICATION = "qg_screener_app2.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'DemoDb',
-        'USER': 'postgres',
-        'PASSWORD': '12345',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv(key='DB_NAME'),
+        'USER': os.getenv(key='DB_USER'), 
+        'PASSWORD': os.getenv(key='DB_PASSWORD'),
+        'HOST': os.getenv(key='DB_HOST' ),
+        'PORT': os.getenv(key='DB_PORT'),
     }
 }
+#jdbc:postgresql://quantumgreeksibrktest.centralus.cloudapp.azure.com:4435/quantumgreeks_retail
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

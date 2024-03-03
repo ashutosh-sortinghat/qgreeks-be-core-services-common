@@ -1,5 +1,7 @@
-Django=='5.0.2'
-asyncio=='3.4.3'
-psycopg2=='3.1.18'
-uuid=='1.30'
-pytz=='2024.1'
+Django==4.2.4
+asyncio==3.4.3
+psycopg2-binary==2.9.7
+uuid==1.30
+pytz==2024.1
+django-rest-swagger
+drf_yasg
