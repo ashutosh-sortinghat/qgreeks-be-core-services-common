@@ -17,6 +17,7 @@ sys.dont_write_bytecode = True
 from corsheaders.defaults import default_headers
 
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -142,6 +143,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://beta-support.quantumtrades.com',
     'https://beta-api.quantumtrades.com',
     'https://api.quantumtrades.com',
+    'http://localhost:3000',
 ]   
 CORS_ALLOW_HEADERS = (
     *default_headers,
