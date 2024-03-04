@@ -1,0 +1,9 @@
+.venv
+*/__pycache__
+*.pyc
+venv
+api_logs.log.*
+*.log
+.vscode/launch.json
+.env
+venv/*
