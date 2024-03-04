@@ -133,10 +133,11 @@ class StockScreenerViewSet(mixins.CreateModelMixin,
     serializer_class = StockScreenerSerializer
     lookup_field = 'stock_screener_id'
 
-    @action(detail=True, methods=['get'])
-    def search(self, request, pk=None, ticker_name=None):
+    @action(detail=False, methods=['get'], url_path="(?P<ticker_name>[^/.]+)/search/ticker")
+    def search(self, request, ticker_name=None):
         try:
-            print("---------------------ran", pk, ticker_name)
+            # ticker_name = "AMZN"
+            print("---------------------ran", ticker_name)
             tickerNameList = [ticker.strip()
                               for ticker in ticker_name.split(",")]
             details = StockScreener.objects.all().filter(ticker__in=tickerNameList)
